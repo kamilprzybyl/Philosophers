@@ -17,7 +17,6 @@
 
 typedef struct s_philo
 {
-	struct s_data	*data;
 	pthread_t		thread_id;
 	int				nb;
 	int				meals;
@@ -30,12 +29,14 @@ typedef struct s_data
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				meals_to_eat;
-	t_philo			philo[250];
+	t_philo			*philo;
 	pthread_mutex_t	status_mutex;
 }				t_data;
 
+t_data	g_data;
+
 void		*thread(void *philo);
-void		print_status(t_data *data, int id, char *status);
+void		print_status(int nb, char *status);
 long long	timestamp(void);
 int			ft_atoi(const char *str);
 

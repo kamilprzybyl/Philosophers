@@ -45,21 +45,17 @@
 void	*thread(void *philo_void)
 {
 	t_philo	*philo;
-	t_data	*data;
 
 	philo = (t_philo *)philo_void;
-	data = philo->data;
-	if (philo->nb % 2)
-		usleep(15000);
 	while (1)
 	{
-		// if (philo->meals == data->meals_to_eat)
-		// 	break ;
-		print_status(data, philo->nb, "is thinking");
-		// think(*(t_data *)data);
-		// take_forks((t_data *)data);
-		// eat(*(t_data *)data);
-		// put_forks();
+		print_status(philo->nb, "is thinking");
+		if (philo->nb == 2)
+			sleep(2);
+		print_status(philo->nb, "is eating");
+		usleep(g_data.time_to_eat * 1000);
+		print_status(philo->nb, "is sleeping");
+		usleep(g_data.time_to_sleep * 1000);
 	}
 	return (NULL);
 }

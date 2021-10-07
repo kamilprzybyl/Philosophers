@@ -1,15 +1,8 @@
 #include "../philo.h"
 
-void	print_status(t_data *data, int nb, char *status)
+void	print_status(int nb, char *status)
 {
-	pthread_mutex_lock(&data->status_mutex);
-	// if (!(rules->dieded))
-	// {
+	pthread_mutex_lock(&g_data.status_mutex);
 	printf("%lli %i %s\n", timestamp(), nb + 1, status);
-		// printf("%lli ", timestamp());
-		// printf("%i ", id + 1);
-		// printf("%s\n", status);
-	// }
-	pthread_mutex_unlock(&data->status_mutex);
-	return ;
+	pthread_mutex_unlock(&g_data.status_mutex);
 }

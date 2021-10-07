@@ -1,15 +1,15 @@
 #include "philo.h"
 
-static int	init(t_data *data, char **argv)
+static int	init(char **argv)
 {
-	data->nb_of_philos = ft_atoi(argv[1]);
-	data->time_to_die = ft_atoi(argv[2]);
-	data->time_to_eat = ft_atoi(argv[3]);
-	data->time_to_sleep = ft_atoi(argv[4]);
+	g_data.nb_of_philos = ft_atoi(argv[1]);
+	g_data.time_to_die = ft_atoi(argv[2]);
+	g_data.time_to_eat = ft_atoi(argv[3]);
+	g_data.time_to_sleep = ft_atoi(argv[4]);
 	if (argv[5])
-		data->meals_to_eat = ft_atoi(argv[5]);
+		g_data.meals_to_eat = ft_atoi(argv[5]);
 	else
-		data->meals_to_eat = 0;
+		g_data.meals_to_eat = 0;
 	return (0);
 }
 
@@ -17,33 +17,29 @@ int		main(int argc, char **argv)
 {
 	int			i;
 	int			j;
-	t_data		data;
-	t_philo		*philo;
 
-	if ((argc != 5 && argc != 6) || init(&data, argv) != 0)
+	if ((argc != 5 && argc != 6) || init(argv) != 0)
 	{
 		write(1, "error\n", 6);
 		return (EXIT_FAILURE);
 	}
-	// data.fork = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * data.rules.nb_of_philos);
-	// if (!data.fork)
-	// 	return (1);
-	// thread = (pthread_t *)malloc(sizeof(pthread_t) * data.rules.nb_of_philos);
-	// if (!thread)
-	// 	return (2);
-	philo = data.philo;
+	g_data.philo = malloc(sizeof(t_philo) * g_data.nb_of_philos);
+	if (!g_data.philo)
+		return (1);
+	int x = -1;
+	while (++x < g_data.nb_of_philos)
+		g_data.philo[x].nb = x;
 	i = 0;
-	while (i < data.nb_of_philos)
+	while (i < g_data.nb_of_philos)
 	{
-		philo[i].nb = i;
-		if (pthread_create(&philo[i].thread_id, NULL, &thread, &philo[i]) != 0)
+		if (pthread_create(&g_data.philo[i].thread_id, NULL, &thread, &g_data.philo[i]) != 0)
 			return (3);
 		i++;
 	}
 	j = 0;
-	while (j < data.nb_of_philos)
+	while (j < g_data.nb_of_philos)
 	{
-		if (pthread_join(philo[j].thread_id, NULL) != 0)
+		if (pthread_join(g_data.philo[j].thread_id, NULL) != 0)
 			return (4);
 		j++;
 	}
