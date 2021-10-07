@@ -1,7 +1,10 @@
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -lpthread
 NAME = 	philo
 SRC = 	main.c \
-		ft_atoi.c
+		philosophers.c \
+		utils/ft_atoi.c \
+		utils/print_status.c \
+		utils/timestamp.c
 OBJ = 	$(SRC:.c=.o)
 
 all: $(NAME)
