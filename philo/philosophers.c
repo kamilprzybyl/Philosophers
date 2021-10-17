@@ -1,46 +1,26 @@
 #include "philo.h"
 
-// __thread const char* thread_name;
-// pthread_mutex_t		mutex[];
-// void	test(int i)
-// {
-// 	if (state[i] == HUNGRY && state[LEFT] != EATING && state[RIGHT] != EATING)
-// 	{
-// 		state[i] = EATING;
-// 		up(s[i]);
-// 	}
-// }
-
-// void	*put_forks(int i)
-// {
-// 	pthread_mutex_lock(mutex);
-// 	state[i] = THINKING;
-// 	test(LEFT);
-// 	test(RIGHT);
-// 	pthread_mutex_unlock(mutex);
-// }
-
-// void	take_forks(t_data *data)
-// {
-// 	pthread_mutex_lock(data->fork[0]);
-// 	state[i] = HUNGRY;
-// 	test(i);
-// 	pthread_mutex_unlock(mutex);
-// 	down(s[i]);
-// }
-
-// void	think(t_data data)
-// {
-// 	// thread_name = __func__;
-// 	gettimeofday(&data.tv, &data.tz);
-// 	printf("%ld %s is thinking\n", data.tv.tv_sec * 1000, );
-// 	sleep(1);
-// }
-
-// void	eat(t_data data)
-// {
-
-// }
+static void	eat(int id)
+{
+	if (id % 2 == 0)
+	{
+		pthread_mutex_lock(&g_data.philo[id].fork);
+		print_status(id, "has taken a fork");
+		pthread_mutex_lock(&g_data.philo[(id + 1) % g_data.nb_of_philos].fork);
+		print_status(id, "has taken a fork");
+	}
+	else
+	{
+		pthread_mutex_lock(&g_data.philo[(id + 1) % g_data.nb_of_philos].fork);
+		print_status(id, "has taken a fork");
+		pthread_mutex_lock(&g_data.philo[id].fork);
+		print_status(id, "has taken a fork");
+	}
+	print_status(id, "is eating");
+	usleep(g_data.time_to_eat * 1000);
+	pthread_mutex_unlock(&g_data.philo[id].fork);
+	pthread_mutex_unlock(&g_data.philo[(id + 1) % g_data.nb_of_philos].fork);
+}
 
 void	*thread(void *philo_void)
 {
@@ -49,13 +29,10 @@ void	*thread(void *philo_void)
 	philo = (t_philo *)philo_void;
 	while (1)
 	{
-		print_status(philo->nb, "is thinking");
-		if (philo->nb == 2)
-			sleep(2);
-		print_status(philo->nb, "is eating");
-		usleep(g_data.time_to_eat * 1000);
-		print_status(philo->nb, "is sleeping");
+		eat(philo->id);
+		print_status(philo->id, "is sleeping");
 		usleep(g_data.time_to_sleep * 1000);
+		print_status(philo->id, "is thinking");
 	}
 	return (NULL);
 }

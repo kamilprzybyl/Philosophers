@@ -1,10 +1,9 @@
 #include "../philo.h"
 
-long long	timestamp(void)
+long	timestamp(void)
 {
-	struct timeval	tv;
-	// struct timezone	tz;
+	struct timeval	te;
 
-	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+	gettimeofday(&te, NULL);
+	return (te.tv_sec * 1000 + te.tv_usec / 1000);
 }
