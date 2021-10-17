@@ -1,4 +1,4 @@
-#include "philo.h"
+#include "../inc/philo.h"
 
 static void	eat(int id)
 {

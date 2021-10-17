@@ -1,4 +1,4 @@
-#include "../philo.h"
+#include "../../inc/philo.h"
 
 void	print_status(int nb, char *status)
 {
