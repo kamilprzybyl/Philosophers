@@ -12,7 +12,7 @@ static int	init(char **argv)
 	if (argv[5])
 		g_data.meals_to_eat = ft_atoi(argv[5]);
 	else
-		g_data.meals_to_eat = 0;
+		g_data.meals_to_eat = -1;
 	pthread_mutex_init(&g_data.status, NULL);
 	g_data.philo = malloc(sizeof(t_philo) * g_data.nb_of_philos);
 	if (!g_data.philo)
@@ -43,7 +43,7 @@ int		main(int argc, char **argv)
 	i = 0;
 	while (i < g_data.nb_of_philos)
 	{
-		if (pthread_create(&g_data.philo[i].thread_id, NULL, &thread, &g_data.philo[i]) != 0)
+		if (pthread_create(&g_data.philo[i].thread_id, NULL, &thread, &g_data.philo[i].id) != 0)
 			return (3);
 		i++;
 	}
