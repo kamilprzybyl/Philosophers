@@ -23,6 +23,7 @@ static int	init(char **argv)
 	while (++i < g_data.nb_of_philos)
 	{
 		g_data.philo[i].id = i;
+		g_data.philo[i].dead = 0;
 		g_data.philo[i].last_meal = time;
 		g_data.philo[i].meals = 0;
 		pthread_mutex_init(&g_data.philo[i].fork, NULL);

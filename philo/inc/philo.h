@@ -13,6 +13,7 @@ typedef struct s_philo
 	pthread_t		thread_id;
 	int				id;
 	int				meals;
+	int				dead;
 	long			last_meal;
 	pthread_mutex_t	fork;
 }				t_philo;
