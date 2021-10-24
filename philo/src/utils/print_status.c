@@ -3,6 +3,6 @@
 void	print_status(int nb, char *status)
 {
 	pthread_mutex_lock(&g_data.status);
-	printf("%li %i %s\n", timestamp() - g_data.start, nb + 1, status);
+	printf("%llu %i %s\n", timestamp() - g_data.start, nb + 1, status);
 	pthread_mutex_unlock(&g_data.status);
 }

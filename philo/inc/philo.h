@@ -10,12 +10,11 @@
 
 typedef struct s_philo
 {
-	pthread_t		thread_id;
-	int				id;
-	int				meals;
-	int				dead;
-	long			last_meal;
-	pthread_mutex_t	fork;
+	pthread_t			thread_id;
+	int					id;
+	int					meals;
+	unsigned long long	last_meal;
+	pthread_mutex_t		fork;
 }				t_philo;
 
 typedef struct s_data
@@ -32,9 +31,13 @@ typedef struct s_data
 
 t_data	g_data;
 
-void	*thread(void *philo);
-void	print_status(int nb, char *status);
-long	timestamp(void);
-int		ft_atoi(const char *str);
+void				*thread(void *philo);
+void				print_status(int nb, char *status);
+unsigned long long	timestamp(void);
+int					ft_atoi(const char *str);
+int					is_number(char *s);
+size_t				ft_strlen(const char *s);
+int					ft_isdigit(int c);
+void				ft_usleep(useconds_t ms);
 
 #endif
