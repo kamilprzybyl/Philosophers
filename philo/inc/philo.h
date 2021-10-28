@@ -19,19 +19,19 @@ typedef struct s_philo
 
 typedef struct s_data
 {
-	int				nb_of_philos;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
-	int				meals_to_eat;
-	long			start;
-	t_philo			*philo;
-	pthread_mutex_t	status;
+	int					nb_of_philos;
+	int					time_to_die;
+	int					time_to_eat;
+	int					time_to_sleep;
+	int					meals_to_eat;
+	unsigned long long	start;
+	t_philo				*philo;
+	pthread_mutex_t		status;
 }				t_data;
 
 t_data	g_data;
 
-void				*thread(void *philo);
+void				*philo(void *philo);
 void				print_status(int nb, char *status);
 unsigned long long	timestamp(void);
 int					ft_atoi(const char *str);
