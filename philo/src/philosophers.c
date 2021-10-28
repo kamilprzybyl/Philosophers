@@ -19,9 +19,9 @@ static void	eat(int id)
 	print_status(id, "is eating");
 	ft_usleep(g_data.time_to_eat * 1000);
 	g_data.philo[id].last_meal = timestamp();
+	g_data.philo[id].meals++;
 	pthread_mutex_unlock(&g_data.philo[id].fork);
 	pthread_mutex_unlock(&g_data.philo[(id + 1) % g_data.nb_of_philos].fork);
-	g_data.philo[id].meals++;
 }
 
 void	take_a_nap(int id)
@@ -35,7 +35,7 @@ void	think(int id)
 	print_status(id, "is thinking");
 }
 
-void	*thread(void *arg)
+void	*philo(void *arg)
 {
 	int	id;
 
