@@ -1,5 +1,18 @@
 #include "../inc/philo.h"
 
+void	free_philos(void)
+{
+	int	i;
+
+	i = 0;
+	while (i < g_data.nb_of_philos)
+	{
+		pthread_mutex_destroy(&g_data.philo[i].fork);
+		free(&g_data.philo[i]);
+		i++;
+	}
+}
+
 static	int	parse(int argc, char **argv)
 {
 	int	i;
@@ -15,14 +28,6 @@ static	int	parse(int argc, char **argv)
 			return (1);
 		i++;
 	}
-	return (0);
-}
-
-static int	init(char **argv)
-{
-	int		i;
-	long	time;
-
 	g_data.nb_of_philos = ft_atoi(argv[1]);
 	g_data.time_to_die = ft_atoi(argv[2]);
 	g_data.time_to_eat = ft_atoi(argv[3]);
@@ -31,6 +36,14 @@ static int	init(char **argv)
 		g_data.meals_to_eat = ft_atoi(argv[5]);
 	else
 		g_data.meals_to_eat = -1;
+	return (0);
+}
+
+static int	init(void)
+{
+	int		i;
+	long	time;
+
 	pthread_mutex_init(&g_data.status, NULL);
 	g_data.philo = malloc(sizeof(t_philo) * g_data.nb_of_philos);
 	if (!g_data.philo)
@@ -38,6 +51,7 @@ static int	init(char **argv)
 	i = -1;
 	time = timestamp();
 	g_data.start = time;
+	g_data.feed_philos = 0;
 	while (++i < g_data.nb_of_philos)
 	{
 		g_data.philo[i].id = i;
@@ -48,14 +62,47 @@ static int	init(char **argv)
 	return (0);
 }
 
-static void	*check_death()
+static int	launch_philos(void)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
+	while (i < g_data.nb_of_philos)
+	{
+		if (pthread_create(&g_data.philo[i].thread_id, NULL,
+				&philo, &g_data.philo[i].id) != 0)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+static int	join_philos(void)
+{
+	int	i;
+
+	i = 0;
+	while (i < g_data.nb_of_philos)
+	{
+		if (pthread_join(g_data.philo[i].thread_id, NULL) != 0)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	*death_loop()
+{
+	int	i;
+
+	i = 0;
 	while (1)
 	{
-		if ((timestamp() - g_data.philo[i].last_meal) / 1000 > (unsigned long long)g_data.time_to_die)
+		if ((timestamp() - g_data.philo[i].last_meal) / 1000
+			> (long)g_data.time_to_die)
 		{
-			print_status(i, "died");
+			pthread_mutex_lock(&g_data.status);
+			printf("%li %i died\n", (timestamp() - g_data.start) / 1000, i + 1);
 			exit(0);
 		}
 		i++;
@@ -65,51 +112,58 @@ static void	*check_death()
 	return (NULL);
 }
 
-int	launch_philos()
+void	*meal_loop()
 {
 	int	i;
-	int	j;
 
 	i = 0;
-	while (i < g_data.nb_of_philos)
+	while (1)
 	{
-		if (pthread_create(&g_data.philo[i].thread_id, NULL, &philo, &g_data.philo[i].id) != 0)
-			return (1);
+		if (g_data.philo[i].meals == g_data.meals_to_eat)
+			g_data.feed_philos++;
+		if (g_data.feed_philos == 5)
+		{
+			pthread_mutex_lock(&g_data.status);
+			printf("%li Everyone has eaten enough\n", (timestamp() - g_data.start) / 1000);
+			exit(0);
+		}
 		i++;
+		if (i == g_data.nb_of_philos)
+			i = 0;
 	}
-	j = 0;
-	while (j < g_data.nb_of_philos)
-	{
-		if (pthread_join(g_data.philo[j].thread_id, NULL) != 0)
-			return (1);
-		j++;
-	}
+	return (NULL);
+}
+
+static int	check_death()
+{
+	pthread_t	id;
+
+	if (pthread_create(&id, NULL, &death_loop, NULL) != 0)
+		return (1);
+	return (0);
+}
+
+static int	check_meals()
+{
+	pthread_t	id;
+
+	if (pthread_create(&id, NULL, &meal_loop, NULL) != 0)
+		return (1);
 	return (0);
 }
 
 int	main(int argc, char **argv)
 {
-
-	pthread_t		id;
-
-	if (parse(argc, argv) == 1 || init(argv) != 0)
+	if (parse(argc, argv) == 1 || init() != 0)
 	{
 		write(2, "error\n", 6);
 		return (1);
 	}
-	// int i = 0;
-	// while (1)
-	// {
-	// 	if ((timestamp() - g_data.philo[i].last_meal) / 1000 > (unsigned long long)g_data.time_to_die)
-	// 	{
-	// 		print_status(i, "died");
-	// 		return (0);
-	// 	}
-	// 	i++;
-	// 	if (i == g_data.nb_of_philos)
-	// 		i = 0;
-	// }
-	if (pthread_create(&id, NULL, &check_death, NULL) != 0)
-		return (1);
-	return (launch_philos());
+	check_death();
+	check_meals();
+	launch_philos();
+	join_philos();
+	free_philos();
+	pthread_mutex_unlock(&g_data.status);
+	return (0);
 }

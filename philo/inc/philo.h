@@ -13,7 +13,7 @@ typedef struct s_philo
 	pthread_t			thread_id;
 	int					id;
 	int					meals;
-	unsigned long long	last_meal;
+	long				last_meal;
 	pthread_mutex_t		fork;
 }				t_philo;
 
@@ -24,7 +24,8 @@ typedef struct s_data
 	int					time_to_eat;
 	int					time_to_sleep;
 	int					meals_to_eat;
-	unsigned long long	start;
+	int					feed_philos;
+	long				start;
 	t_philo				*philo;
 	pthread_mutex_t		status;
 }				t_data;
@@ -33,7 +34,7 @@ t_data	g_data;
 
 void				*philo(void *philo);
 void				print_status(int nb, char *status);
-unsigned long long	timestamp(void);
+long				timestamp(void);
 int					ft_atoi(const char *str);
 int					is_number(char *s);
 size_t				ft_strlen(const char *s);

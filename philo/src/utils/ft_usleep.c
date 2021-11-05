@@ -2,9 +2,9 @@
 
 void	ft_usleep(useconds_t ms)
 {
-	unsigned long long res;
+	long	time;
 
-	res = timestamp() + ms;
-	while (timestamp() <= res)
+	time = timestamp();
+	while (timestamp() < time + ms)
 		usleep(50);
 }

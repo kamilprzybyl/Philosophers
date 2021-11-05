@@ -2,7 +2,7 @@
 
 static void	eat(int id)
 {
-	if (id % 2 == 0)
+	if (id % 2)
 	{
 		pthread_mutex_lock(&g_data.philo[id].fork);
 		print_status(id, "has taken a fork");
@@ -16,12 +16,12 @@ static void	eat(int id)
 		pthread_mutex_lock(&g_data.philo[id].fork);
 		print_status(id, "has taken a fork");
 	}
+	g_data.philo[id].last_meal = timestamp();
 	print_status(id, "is eating");
 	ft_usleep(g_data.time_to_eat * 1000);
-	g_data.philo[id].last_meal = timestamp();
-	g_data.philo[id].meals++;
 	pthread_mutex_unlock(&g_data.philo[id].fork);
 	pthread_mutex_unlock(&g_data.philo[(id + 1) % g_data.nb_of_philos].fork);
+	g_data.philo[id].meals++;
 }
 
 void	take_a_nap(int id)
@@ -40,7 +40,10 @@ void	*philo(void *arg)
 	int	id;
 
 	id = *(int *)arg;
-	while (g_data.meals_to_eat == -1 || g_data.philo[id].meals < g_data.meals_to_eat)
+	if (id % 2)
+		ft_usleep(1);
+	while (g_data.meals_to_eat == -1
+		|| g_data.philo[id].meals < g_data.meals_to_eat)
 	{
 		eat(id);
 		take_a_nap(id);

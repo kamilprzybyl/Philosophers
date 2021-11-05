@@ -1,6 +1,6 @@
 #include "../../inc/philo.h"
 
-unsigned long long	timestamp(void)
+long	timestamp(void)
 {
 	struct timeval	te;
 
