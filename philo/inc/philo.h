@@ -17,6 +17,7 @@ typedef struct s_data
 	int				meals_to_eat;
 	int				fed_philos;
 	long			start;
+	int				death_lock;
 	struct s_philo	*philo;
 	pthread_mutex_t	status;
 }				t_data;
@@ -42,6 +43,6 @@ int		is_number(char *s);
 size_t	ft_strlen(const char *s);
 int		ft_isdigit(int c);
 void	ft_usleep(useconds_t ms);
-void	free_philos(t_data *data);
+void	free_mem(t_data *data);
 
 #endif

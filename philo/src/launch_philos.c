@@ -42,8 +42,9 @@ static void	*philo(void *arg)
 	philo = (struct s_philo *)arg;
 	if (philo->id % 2)
 		ft_usleep(1);
-	while (philo->data->meals_to_eat == -1
-		|| philo->meals < philo->data->meals_to_eat)
+	while ((philo->data->meals_to_eat == -1
+			|| philo->meals < philo->data->meals_to_eat)
+		&& philo->data->death_lock == 0)
 	{
 		eat(philo->id, philo->data);
 		take_a_nap(philo->id, philo->data);

@@ -12,7 +12,7 @@ SRC = 	src/main.c \
 		src/utils/ft_strlen.c \
 		src/utils/ft_isdigit.c \
 		src/utils/ft_usleep.c \
-		src/utils/free_philos.c
+		src/utils/free_mem.c
 
 OBJ = 	$(SRC:.c=.o)
 

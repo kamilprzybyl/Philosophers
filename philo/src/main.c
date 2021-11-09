@@ -61,6 +61,6 @@ int	main(int argc, char **argv)
 	launch_philos(&data);
 	check_death(&data);
 	join_threads(&data);
-	// sleep(100);
+	free_mem(&data);
 	return (0);
 }
